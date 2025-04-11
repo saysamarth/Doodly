@@ -10,7 +10,8 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
@@ -22,10 +23,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       duration: const Duration(milliseconds: 300),
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 0.95).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ),
+      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
@@ -51,22 +49,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.blue.shade50,
-              Colors.white,
-            ],
+            colors: [Colors.blue.shade50, Colors.white],
           ),
         ),
         child: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 40),
+              SizedBox(height: height * 0.12),
               // Logo and title
               Center(
                 child: Column(
@@ -74,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Colors.white, 
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
@@ -111,9 +108,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ],
                 ),
               ),
-              
-              const Spacer(),
-              
+
+              SizedBox(height: height * 0.1),
+
               // Game options
               Container(
                 padding: const EdgeInsets.all(24),
@@ -139,7 +136,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 32),
+                    SizedBox(height: height * 0.05),
                     Row(
                       children: [
                         Expanded(
@@ -152,19 +149,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                   label: "Create Room",
                                   icon: Icons.add_circle_outline,
                                   color: Colors.blue.shade400,
-                                  onPressed: () => _onButtonPress(() {
-                                    Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => const CreateRoomScreen(),
-                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }),
+                                  onPressed:
+                                      () => _onButtonPress(() {
+                                        Navigator.of(context).push(
+                                          PageRouteBuilder(
+                                            pageBuilder:
+                                                (
+                                                  context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                ) => const CreateRoomScreen(),
+                                            transitionsBuilder: (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child,
+                                            ) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      }),
                                 ),
                               );
                             },
@@ -181,19 +189,30 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                   label: "Join Room",
                                   icon: Icons.people_outline,
                                   color: Colors.amber.shade400,
-                                  onPressed: () => _onButtonPress(() {
-                                    Navigator.of(context).push(
-                                      PageRouteBuilder(
-                                        pageBuilder: (context, animation, secondaryAnimation) => const JoinRoomScreen(),
-                                        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                          return FadeTransition(
-                                            opacity: animation,
-                                            child: child,
-                                          );
-                                        },
-                                      ),
-                                    );
-                                  }),
+                                  onPressed:
+                                      () => _onButtonPress(() {
+                                        Navigator.of(context).push(
+                                          PageRouteBuilder(
+                                            pageBuilder:
+                                                (
+                                                  context,
+                                                  animation,
+                                                  secondaryAnimation,
+                                                ) => const JoinRoomScreen(),
+                                            transitionsBuilder: (
+                                              context,
+                                              animation,
+                                              secondaryAnimation,
+                                              child,
+                                            ) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      }),
                                 ),
                               );
                             },
@@ -204,18 +223,14 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   ],
                 ),
               ),
-              
               const Spacer(),
-              
+
               // Footer
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Text(
                   "© 2025 Skribbl Game",
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
                 ),
               ),
             ],
@@ -250,11 +265,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 40,
-              color: Colors.white,
-            ),
+            Icon(icon, size: 40, color: Colors.white),
             const SizedBox(height: 12),
             Text(
               label,
