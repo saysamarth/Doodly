@@ -544,6 +544,7 @@ class _PaintScreenState extends State<PaintScreen>
     return Scaffold(
       key: scaffoldKey,
       drawer: PlayerScore(scoreboard),
+      resizeToAvoidBottomInset: true,
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -671,469 +672,514 @@ class _PaintScreenState extends State<PaintScreen>
                 ),
               ),
 
-              // Current word/blanks display
-              Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 20,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [lighterColor, darkerColor],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: baseColor.withAlpha(80),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Current drawer indicator
-                    if (_canUserDraw)
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withAlpha(50),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.brush,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    if (_canUserDraw) const SizedBox(width: 12),
-
-                    // Word or blanks
-                    dataOfRoom['turn']['nickname'] != widget.data['nickname']
-                        ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children:
-                              textBlankWidget
-                                  .map(
-                                    (widget) => Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0,
-                                      ),
-                                      child: widget,
-                                    ),
-                                  )
-                                  .toList(),
-                        )
-                        : Text(
-                          dataOfRoom['word'] ?? '',
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 1.2,
-                          ),
-                        ),
-                  ],
-                ),
-              ),
-
-              // Drawing canvas with shadow and border
-              Container(
-                width: width,
-                height: height * 0.4,
-                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(18),
-                      blurRadius: 10,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Stack(
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      // Drawing canvas
-                      GestureDetector(
-                        onPanUpdate: _canUserDraw ? panUpdateHandle : null,
-                        onPanStart: _canUserDraw ? panStartHandle : null,
-                        onPanEnd: _canUserDraw ? panEndHandle : null,
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          color: Colors.white,
-                          child: CustomPaint(
-                            painter: MyCustomPainter(
-                              paths: paths,
-                              currentPoints: currentPoints,
-                            ),
-                          ),
+                      Container(
+                        margin: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 12,
+                          horizontal: 20,
                         ),
-                      ),
-
-                      // "Your Turn" overlay when it's not your turn to draw
-                      if (!_canUserDraw)
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withAlpha(160),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Container(
-                                  width: 8,
-                                  height: 8,
-                                  decoration: BoxDecoration(
-                                    color: Colors.lightGreen,
-                                    shape: BoxShape.circle,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Text(
-                                  '${dataOfRoom['turn']['nickname']} is drawing',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ],
-                            ),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [lighterColor, darkerColor],
                           ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Drawing tools - only visible when it's your turn
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: _canUserDraw ? 70 : 0,
-                margin: EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow:
-                      _canUserDraw
-                          ? [
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withAlpha(12),
+                              color: baseColor.withAlpha(80),
                               blurRadius: 8,
-                              spreadRadius: 1,
-                            ),
-                          ]
-                          : null,
-                ),
-                child:
-                    _canUserDraw
-                        ? Row(
-                          children: [
-                            // Color selector
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: selectColor,
-                                borderRadius: BorderRadius.circular(16),
-                                child: Container(
-                                  width: 70,
-                                  padding: const EdgeInsets.all(12),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 30,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          color: selectedColor,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.grey.shade300,
-                                            width: 2,
-                                          ),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: selectedColor.withAlpha(100),
-                                              blurRadius: 4,
-                                              spreadRadius: 1,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            // Stroke width slider
-                            Expanded(
-                              child: Slider(
-                                min: 1.0,
-                                max: 10,
-                                divisions: 9,
-                                label: "${strokeWidth.toInt()}",
-                                activeColor: selectedColor,
-                                inactiveColor: selectedColor.withAlpha(50),
-                                value: strokeWidth,
-                                onChanged: (double value) {
-                                  setState(() {
-                                    strokeWidth = value;
-                                  });
-                                  Map map = {
-                                    'value': value,
-                                    'roomName': dataOfRoom['name'],
-                                  };
-                                  _socket.emit('stroke-width', map);
-                                },
-                              ),
-                            ),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                onTap: () {
-                                  _socket.emit(
-                                    'clean-screen',
-                                    dataOfRoom['name'],
-                                  );
-                                },
-                                borderRadius: BorderRadius.circular(16),
-                                child: Container(
-                                  width: 60,
-                                  padding: const EdgeInsets.all(8),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.delete_outline,
-                                        color: Colors.red.shade400,
-                                        size: 28,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              offset: const Offset(0, 4),
                             ),
                           ],
-                        )
-                        : SizedBox(),
-              ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            // Current drawer indicator
+                            if (_canUserDraw)
+                              Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withAlpha(50),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.brush,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            if (_canUserDraw) const SizedBox(width: 12),
 
-              if (!_canUserDraw)
-                Container(
-                  margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: darkerColor.withAlpha(25),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: darkerColor.withAlpha(50),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.info_outline, size: 18, color: darkerColor),
-                      const SizedBox(width: 8),
-                      Text(
-                        "Guess the word in the chat below",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: darkerColor,
+                            // Word or blanks
+                            dataOfRoom['turn']['nickname'] !=
+                                    widget.data['nickname']
+                                ? Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children:
+                                      textBlankWidget
+                                          .map(
+                                            (widget) => Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 4.0,
+                                                  ),
+                                              child: widget,
+                                            ),
+                                          )
+                                          .toList(),
+                                )
+                                : Text(
+                                  dataOfRoom['word'] ?? '',
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 1.2,
+                                  ),
+                                ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
 
-              // Chat messages with elegant styling
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withAlpha(12),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.all(12),
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      var msg = messages[index].values;
-                      final username = msg.elementAt(0);
-                      final message = msg.elementAt(1);
-                      final isCurrentUser = username == widget.data['nickname'];
-
-                      // Check if message is a correct guess
-                      final bool isCorrectGuess = message
-                          .toLowerCase()
-                          .contains((dataOfRoom['word'] ?? '').toLowerCase());
-
-                      return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 6),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // User avatar
-                            Container(
-                              width: 36,
-                              height: 36,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    isCurrentUser
-                                        ? darkerColor
-                                        : Colors.grey.shade400,
-                                    isCurrentUser
-                                        ? lighterColor
-                                        : Colors.grey.shade600,
-                                  ],
-                                ),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  username.substring(0, 1).toUpperCase(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                      // Drawing canvas with shadow and border
+                      Container(
+                        width: width,
+                        height: height * 0.4,
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(18),
+                              blurRadius: 10,
+                              spreadRadius: 1,
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Stack(
+                            children: [
+                              // Drawing canvas
+                              GestureDetector(
+                                onPanUpdate:
+                                    _canUserDraw ? panUpdateHandle : null,
+                                onPanStart:
+                                    _canUserDraw ? panStartHandle : null,
+                                onPanEnd: _canUserDraw ? panEndHandle : null,
+                                child: Container(
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                  color: Colors.white,
+                                  child: CustomPaint(
+                                    painter: MyCustomPainter(
+                                      paths: paths,
+                                      currentPoints: currentPoints,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(width: 10),
 
-                            // Message content
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        username,
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              isCurrentUser
-                                                  ? darkerColor
-                                                  : Colors.black87,
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                      if (isCorrectGuess)
+                              // "Your Turn" overlay when it's not your turn to draw
+                              if (!_canUserDraw)
+                                Positioned(
+                                  top: 8,
+                                  right: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 6,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.black.withAlpha(160),
+                                      borderRadius: BorderRadius.circular(20),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
                                         Container(
-                                          margin: const EdgeInsets.only(
-                                            left: 8,
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 6,
-                                            vertical: 2,
-                                          ),
+                                          width: 8,
+                                          height: 8,
                                           decoration: BoxDecoration(
-                                            color: Colors.green.withAlpha(50),
-                                            borderRadius: BorderRadius.circular(
-                                              10,
-                                            ),
+                                            color: Colors.lightGreen,
+                                            shape: BoxShape.circle,
                                           ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: const [
-                                              Icon(
-                                                Icons.check_circle,
-                                                color: Colors.green,
-                                                size: 12,
-                                              ),
-                                              SizedBox(width: 4),
-                                              Text(
-                                                'Guessed it!',
-                                                style: TextStyle(
-                                                  color: Colors.green,
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          '${dataOfRoom['turn']['nickname']} is drawing',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // Drawing tools - only visible when it's your turn
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        height: _canUserDraw ? 70 : 0,
+                        margin: EdgeInsets.symmetric(horizontal: 16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow:
+                              _canUserDraw
+                                  ? [
+                                    BoxShadow(
+                                      color: Colors.black.withAlpha(12),
+                                      blurRadius: 8,
+                                      spreadRadius: 1,
+                                    ),
+                                  ]
+                                  : null,
+                        ),
+                        child:
+                            _canUserDraw
+                                ? Row(
+                                  children: [
+                                    // Color selector
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: selectColor,
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Container(
+                                          width: 70,
+                                          padding: const EdgeInsets.all(12),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                  color: selectedColor,
+                                                  shape: BoxShape.circle,
+                                                  border: Border.all(
+                                                    color: Colors.grey.shade300,
+                                                    width: 2,
+                                                  ),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: selectedColor
+                                                          .withAlpha(100),
+                                                      blurRadius: 4,
+                                                      spreadRadius: 1,
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 4),
+                                      ),
+                                    ),
+
+                                    // Stroke width slider
+                                    Expanded(
+                                      child: Slider(
+                                        min: 1.0,
+                                        max: 10,
+                                        divisions: 9,
+                                        label: "${strokeWidth.toInt()}",
+                                        activeColor: selectedColor,
+                                        inactiveColor: selectedColor.withAlpha(
+                                          50,
+                                        ),
+                                        value: strokeWidth,
+                                        onChanged: (double value) {
+                                          setState(() {
+                                            strokeWidth = value;
+                                          });
+                                          Map map = {
+                                            'value': value,
+                                            'roomName': dataOfRoom['name'],
+                                          };
+                                          _socket.emit('stroke-width', map);
+                                        },
+                                      ),
+                                    ),
+                                    Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          _socket.emit(
+                                            'clean-screen',
+                                            dataOfRoom['name'],
+                                          );
+                                        },
+                                        borderRadius: BorderRadius.circular(16),
+                                        child: Container(
+                                          width: 60,
+                                          padding: const EdgeInsets.all(8),
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Icon(
+                                                Icons.delete_outline,
+                                                color: Colors.red.shade400,
+                                                size: 28,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                                : SizedBox(),
+                      ),
+
+                      if (!_canUserDraw)
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 10,
+                            horizontal: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: darkerColor.withAlpha(25),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: darkerColor.withAlpha(50),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                size: 18,
+                                color: darkerColor,
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Guess the word in the chat below",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: darkerColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                      Container(
+                        height:
+                            height * 0.21, // Fixed height instead of Expanded
+                        margin: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(12),
+                              blurRadius: 8,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.all(12),
+                          itemCount: messages.length,
+                          itemBuilder: (context, index) {
+                            var msg = messages[index].values;
+                            final username = msg.elementAt(0);
+                            final message = msg.elementAt(1);
+                            final isCurrentUser =
+                                username == widget.data['nickname'];
+
+                            // Check if message is a correct guess
+                            final bool isCorrectGuess = message
+                                .toLowerCase()
+                                .contains(
+                                  (dataOfRoom['word'] ?? '').toLowerCase(),
+                                );
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(vertical: 6),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // User avatar
                                   Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 14,
-                                      vertical: 10,
-                                    ),
+                                    width: 36,
+                                    height: 36,
                                     decoration: BoxDecoration(
-                                      color:
-                                          isCorrectGuess
-                                              ? Colors.green.withAlpha(125)
-                                              : (isCurrentUser
-                                                  ? baseColor.withAlpha(25)
-                                                  : Colors.grey.shade100),
-                                      borderRadius: BorderRadius.circular(12),
-                                      border: Border.all(
-                                        color:
-                                            isCorrectGuess
-                                                ? Colors.green.withAlpha(80)
-                                                : (isCurrentUser
-                                                    ? baseColor.withAlpha(50)
-                                                    : Colors.grey.shade200),
-                                        width: 1,
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          isCurrentUser
+                                              ? darkerColor
+                                              : Colors.grey.shade400,
+                                          isCurrentUser
+                                              ? lighterColor
+                                              : Colors.grey.shade600,
+                                        ],
+                                      ),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        username.substring(0, 1).toUpperCase(),
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16,
+                                        ),
                                       ),
                                     ),
-                                    child: Text(
-                                      message,
-                                      style: TextStyle(
-                                        color:
-                                            isCorrectGuess
-                                                ? Colors.green.shade800
-                                                : Colors.black87,
-                                        fontSize: 14,
-                                      ),
+                                  ),
+                                  const SizedBox(width: 10),
+
+                                  // Message content
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              username,
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    isCurrentUser
+                                                        ? darkerColor
+                                                        : Colors.black87,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                            if (isCorrectGuess)
+                                              Container(
+                                                margin: const EdgeInsets.only(
+                                                  left: 8,
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 6,
+                                                      vertical: 2,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green.withAlpha(
+                                                    50,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: const [
+                                                    Icon(
+                                                      Icons.check_circle,
+                                                      color: Colors.green,
+                                                      size: 12,
+                                                    ),
+                                                    SizedBox(width: 4),
+                                                    Text(
+                                                      'Guessed it!',
+                                                      style: TextStyle(
+                                                        color: Colors.green,
+                                                        fontSize: 10,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 14,
+                                            vertical: 10,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color:
+                                                isCorrectGuess
+                                                    ? Colors.green.withAlpha(
+                                                      125,
+                                                    )
+                                                    : (isCurrentUser
+                                                        ? baseColor.withAlpha(
+                                                          25,
+                                                        )
+                                                        : Colors.grey.shade100),
+                                            borderRadius: BorderRadius.circular(
+                                              12,
+                                            ),
+                                            border: Border.all(
+                                              color:
+                                                  isCorrectGuess
+                                                      ? Colors.green.withAlpha(
+                                                        80,
+                                                      )
+                                                      : (isCurrentUser
+                                                          ? baseColor.withAlpha(
+                                                            50,
+                                                          )
+                                                          : Colors
+                                                              .grey
+                                                              .shade200),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            message,
+                                            style: TextStyle(
+                                              color:
+                                                  isCorrectGuess
+                                                      ? Colors.green.shade800
+                                                      : Colors.black87,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                          ],
+                            );
+                          },
                         ),
-                      );
-                    },
+                      ),
+                    ],
                   ),
                 ),
               ),
+
+              // Current word/blanks display
+
               // Message input field
               if (dataOfRoom['turn']['nickname'] != widget.data['nickname'])
                 Container(

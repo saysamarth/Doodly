@@ -9,11 +9,12 @@ class JoinRoomScreen extends StatefulWidget {
   _JoinRoomScreenState createState() => _JoinRoomScreenState();
 }
 
-class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProviderStateMixin {
+class _JoinRoomScreenState extends State<JoinRoomScreen>
+    with SingleTickerProviderStateMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _roomNameController = TextEditingController();
   bool _isLoading = false;
-  
+
   late AnimationController _buttonAnimationController;
   late Animation<double> _buttonScaleAnimation;
 
@@ -49,14 +50,15 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
   }
 
   void joinRoom() {
-    if (_nameController.text.isNotEmpty && _roomNameController.text.isNotEmpty) {
+    if (_nameController.text.isNotEmpty &&
+        _roomNameController.text.isNotEmpty) {
       setState(() {
         _isLoading = true;
       });
-      
+
       Map<String, String> data = {
         "nickname": _nameController.text,
-        "name": _roomNameController.text
+        "name": _roomNameController.text,
       };
 
       // Adding a small delay to show loading state
@@ -64,12 +66,18 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
         setState(() {
           _isLoading = false;
         });
-        
+
         Navigator.of(context).push(
           PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) => 
-                PaintScreen(data: data, screenFrom: 'joinRoom'),
-            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            pageBuilder:
+                (context, animation, secondaryAnimation) =>
+                    PaintScreen(data: data, screenFrom: 'joinRoom'),
+            transitionsBuilder: (
+              context,
+              animation,
+              secondaryAnimation,
+              child,
+            ) {
               return FadeTransition(
                 opacity: animation,
                 child: SlideTransition(
@@ -101,73 +109,77 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Colors.amber.shade50,
-              Colors.white,
-            ],
+            colors: [Colors.amber.shade50, Colors.white],
           ),
         ),
         child: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // App bar with back button
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_rounded),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                    const Spacer(),
-                    Text(
-                      "Join Room",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.amber.shade800,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // App bar with back button
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.arrow_back_ios_rounded),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                    ),
-                    const Spacer(),
-                    const SizedBox(width: 48), // For balance
-                  ],
-                ),
-              ),
-              
-              // Header illustration
-              Container(
-                height: 180,
-                margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                decoration: BoxDecoration(
-                  color: Colors.amber.shade100,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.amber.shade100.withOpacity(0.5),
-                      blurRadius: 15,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.people_alt_rounded,
-                    size: 80,
-                    color: Colors.amber.shade700,
+                      const Spacer(),
+                      Text(
+                        "Join Room",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.amber.shade800,
+                        ),
+                      ),
+                      const Spacer(),
+                      const SizedBox(width: 48), // For balance
+                    ],
                   ),
                 ),
-              ),
-              
-              // Form container
-              Expanded(
-                child: Container(
+
+                // Header illustration
+                Container(
+                  height: 180,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber.shade100,
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.amber.shade100.withOpacity(0.5),
+                        blurRadius: 15,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.people_alt_rounded,
+                      size: 80,
+                      color: Colors.amber.shade700,
+                    ),
+                  ),
+                ),
+
+                // Form container
+                Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20),
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
@@ -193,7 +205,7 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
                         prefixIcon: const Icon(Icons.person_outline),
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // Room name field
                       _buildSectionTitle("Room Name"),
                       const SizedBox(height: 8),
@@ -202,9 +214,9 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
                         hintText: "Enter Room Name",
                         prefixIcon: const Icon(Icons.meeting_room_outlined),
                       ),
-                      
-                      const Spacer(),
-                      
+
+                      SizedBox(height: height * 0.29),
+
                       // Join button
                       AnimatedBuilder(
                         animation: _buttonScaleAnimation,
@@ -212,56 +224,68 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
                           return Transform.scale(
                             scale: _buttonScaleAnimation.value,
                             child: GestureDetector(
-                              onTapDown: (_) => _buttonAnimationController.forward(),
-                              onTapUp: (_) => _buttonAnimationController.reverse(),
-                              onTapCancel: () => _buttonAnimationController.reverse(),
-                              onTap: _isLoading ? null : () => _animateButton(joinRoom),
+                              onTapDown:
+                                  (_) => _buttonAnimationController.forward(),
+                              onTapUp:
+                                  (_) => _buttonAnimationController.reverse(),
+                              onTapCancel:
+                                  () => _buttonAnimationController.reverse(),
+                              onTap:
+                                  _isLoading
+                                      ? null
+                                      : () => _animateButton(joinRoom),
                               child: Container(
                                 height: 60,
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
-                                    colors: [Colors.amber.shade400, Colors.amber.shade700],
+                                    colors: [
+                                      Colors.amber.shade400,
+                                      Colors.amber.shade700,
+                                    ],
                                     begin: Alignment.centerLeft,
                                     end: Alignment.centerRight,
                                   ),
                                   borderRadius: BorderRadius.circular(30),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.amber.shade300.withOpacity(0.6),
+                                      color: Colors.amber.shade300.withOpacity(
+                                        0.6,
+                                      ),
                                       blurRadius: 10,
                                       offset: const Offset(0, 4),
                                     ),
                                   ],
                                 ),
                                 child: Center(
-                                  child: _isLoading
-                                      ? const SizedBox(
-                                          height: 24,
-                                          width: 24,
-                                          child: CircularProgressIndicator(
-                                            color: Colors.white,
-                                            strokeWidth: 3,
-                                          ),
-                                        )
-                                      : const Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              "Join Room",
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold,
-                                                letterSpacing: 1,
-                                              ),
-                                            ),
-                                            SizedBox(width: 8),
-                                            Icon(
-                                              Icons.login_rounded,
+                                  child:
+                                      _isLoading
+                                          ? const SizedBox(
+                                            height: 24,
+                                            width: 24,
+                                            child: CircularProgressIndicator(
                                               color: Colors.white,
+                                              strokeWidth: 3,
                                             ),
-                                          ],
-                                        ),
+                                          )
+                                          : const Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Text(
+                                                "Join Room",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold,
+                                                  letterSpacing: 1,
+                                                ),
+                                              ),
+                                              SizedBox(width: 8),
+                                              Icon(
+                                                Icons.login_rounded,
+                                                color: Colors.white,
+                                              ),
+                                            ],
+                                          ),
                                 ),
                               ),
                             ),
@@ -271,21 +295,18 @@ class _JoinRoomScreenState extends State<JoinRoomScreen> with SingleTickerProvid
                     ],
                   ),
                 ),
-              ),
-              
-              // Bottom note
-              Container(
-                padding: const EdgeInsets.all(16),
-                alignment: Alignment.center,
-                child: Text(
-                  "Make sure you enter the correct room name",
-                  style: TextStyle(
-                    color: Colors.grey.shade600,
-                    fontSize: 14,
+
+                // Bottom note
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Make sure you enter the correct room name",
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
