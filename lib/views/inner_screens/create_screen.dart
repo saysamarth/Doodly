@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skribble/views/widgets/custom_textfield.dart';
+import 'package:doodly/views/widgets/custom_textfield.dart';
 import 'paint_screen.dart';
 
 class CreateRoomScreen extends StatefulWidget {

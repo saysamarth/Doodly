@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skribble/views/inner_screens/paint_screen.dart';
-import 'package:skribble/views/widgets/custom_textfield.dart';
+import 'package:doodly/views/inner_screens/paint_screen.dart';
+import 'package:doodly/views/widgets/custom_textfield.dart';
 
 class JoinRoomScreen extends StatefulWidget {
   const JoinRoomScreen({Key? key}) : super(key: key);

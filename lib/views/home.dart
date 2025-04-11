@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:skribble/views/inner_screens/create_screen.dart';
-import 'package:skribble/views/inner_screens/join_screen.dart';
+import 'package:doodly/views/inner_screens/create_screen.dart';
+import 'package:doodly/views/inner_screens/join_screen.dart';
 import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {

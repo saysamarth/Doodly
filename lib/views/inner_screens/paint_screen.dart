@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:skribble/views/inner_screens/leaderboard.dart';
-import 'package:skribble/views/home.dart';
-import 'package:skribble/models/my_custom_painter.dart';
-import 'package:skribble/models/touch_points.dart';
-import 'package:skribble/views/widgets/scoreboard.dart';
-import 'package:skribble/views/inner_screens/waiting_screen.dart';
+import 'package:doodly/views/inner_screens/leaderboard.dart';
+import 'package:doodly/views/home.dart';
+import 'package:doodly/models/my_custom_painter.dart';
+import 'package:doodly/models/touch_points.dart';
+import 'package:doodly/views/widgets/scoreboard.dart';
+import 'package:doodly/views/inner_screens/waiting_screen.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class PaintScreen extends StatefulWidget {
@@ -198,12 +198,20 @@ class _PaintScreenState extends State<PaintScreen>
 
   void handleTurnChange(data) {
     String oldWord = dataOfRoom['word'] ?? '';
-    final BuildContext currentContext = context;
+    final BuildContext currentContext = context; // This is good
+
     showDialog(
       context: currentContext,
       barrierDismissible: false,
-      builder: (context) {
+      builder: (dialogContext) {
+        // Renamed to dialogContext for clarity
         Future.delayed(Duration(seconds: 3), () {
+          // Close the dialog with the dialog's context
+          if (Navigator.canPop(dialogContext)) {
+            Navigator.of(dialogContext).pop();
+          }
+
+          // Update state if parent widget is still mounted
           if (mounted) {
             setState(() {
               dataOfRoom = data;
@@ -214,16 +222,14 @@ class _PaintScreenState extends State<PaintScreen>
               paths.clear();
               currentPoints.clear();
             });
-          }
 
-          Navigator.of(context).pop();
-          if (mounted) {
             if (_timer.isActive) {
               _timer.cancel();
             }
             startTimer();
           }
         });
+
         return AlertDialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
@@ -478,7 +484,6 @@ class _PaintScreenState extends State<PaintScreen>
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
 
-    // Generate dynamic colors based on the room name for consistency
     final int hashCode = dataOfRoom.isEmpty ? 0 : dataOfRoom['name'].hashCode;
     final Color primaryColor = Colors.blue;
     final Color baseColor = Color.fromARGB(
@@ -589,7 +594,7 @@ class _PaintScreenState extends State<PaintScreen>
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        dataOfRoom['name'] ?? 'Skribble Game',
+                        dataOfRoom['name'] ?? 'Doodly Game',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

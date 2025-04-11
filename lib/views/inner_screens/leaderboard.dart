@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skribble/views/home.dart';
+import 'package:doodly/views/home.dart';
 
 class FinalLeaderboard extends StatelessWidget {
   final List<Map> scoreboard;

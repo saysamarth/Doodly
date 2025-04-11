@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:skribble/models/touch_points.dart';
+import 'package:doodly/models/touch_points.dart';
 
 class MyCustomPainter extends CustomPainter {
   MyCustomPainter({required this.paths, required this.currentPoints});
