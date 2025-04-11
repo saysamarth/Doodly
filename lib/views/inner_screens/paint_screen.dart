@@ -483,7 +483,6 @@ class _PaintScreenState extends State<PaintScreen>
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
     final int hashCode = dataOfRoom.isEmpty ? 0 : dataOfRoom['name'].hashCode;
     final Color primaryColor = Colors.blue;
     final Color baseColor = Color.fromARGB(
