@@ -89,7 +89,7 @@ Doodly is an interactive multiplayer game where players take turns drawing while
 <summary><h2>🎬 Watch Gameplay Demo</h2></summary>
 <div align="center">
   <a href="https://youtu.be/t-OEIqBXEFk" target="_blank">
-    <img src="https://raw.githubusercontent.com/saysamarth/doodly/main/assets/screenshots/thumbnail1.jpg" width="400"/>
+    <img src="https://raw.githubusercontent.com/saysamarth/doodly/main/assets/thumbnail.png" width="400"/>
     <br/>
     <b>▶️ Doodly Gameplay Demo</b>
   </a>
