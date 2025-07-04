@@ -14,7 +14,7 @@
   [![MongoDB](https://img.shields.io/badge/MongoDB-8.13.2-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
   [![Socket.io](https://img.shields.io/badge/Socket.io-4.7.2-010101?style=for-the-badge&logo=socket.io&logoColor=white)](https://socket.io/)
   
-  [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)](http://makeapullrequest.com)
+  [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)]()
   [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
 </div>
